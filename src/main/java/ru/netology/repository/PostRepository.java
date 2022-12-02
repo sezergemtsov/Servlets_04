@@ -29,7 +29,9 @@ public class PostRepository {
         //Будем считать что удаленные номера можно использовать повторно
         if (post.getId() == 0) {
             if (repository.isEmpty()) {
-                post.setId(1);
+                if (!setPostIdOne(post)) {
+                    post.setId(setPostWithNewId());
+                }
             } else {
                 post.setId(setPostWithNewId());
             }
@@ -47,8 +49,15 @@ public class PostRepository {
         }
     }
 
-    private Long setPostWithNewId() {
+    private synchronized Long setPostWithNewId() {
         return repository.entrySet().stream().mapToLong(x -> x.getKey()).max().getAsLong() + 1;
+    }
+    private synchronized boolean setPostIdOne(Post post) {
+        if (repository.containsKey(1)) {
+            post.setId(1);
+            return true;
+        }
+        return false;
     }
 
 }
