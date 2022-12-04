@@ -5,10 +5,12 @@ import ru.netology.model.Post;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 // Stub
 public class PostRepository {
     private ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap();
+    private static AtomicLong idCounter = new AtomicLong(0);
 
     public List<Post> all() {
         List<Post> posts = new Vector<>();
@@ -28,13 +30,7 @@ public class PostRepository {
         //Если пришел пост с id = 0, регестрируем новый номер id поста в зависимости от существующих в репозитории
         //Будем считать что удаленные номера можно использовать повторно
         if (post.getId() == 0) {
-            if (repository.isEmpty()) {
-                if (!setPostIdOne(post)) {
-                    post.setId(setPostWithNewId());
-                }
-            } else {
-                post.setId(setPostWithNewId());
-            }
+            post.setId(idCounter.incrementAndGet());
         }
         //Если пост с id!=0 не найден в репозитории будем просто сохранять его под своим номером
         repository.put(post.getId(), post);
@@ -47,17 +43,6 @@ public class PostRepository {
         } else {
             throw new NotFoundException("Nothing to delete. Repository doesn't contain current post");
         }
-    }
-
-    private synchronized Long setPostWithNewId() {
-        return repository.entrySet().stream().mapToLong(x -> x.getKey()).max().getAsLong() + 1;
-    }
-    private synchronized boolean setPostIdOne(Post post) {
-        if (repository.containsKey(1)) {
-            post.setId(1);
-            return true;
-        }
-        return false;
     }
 
 }
