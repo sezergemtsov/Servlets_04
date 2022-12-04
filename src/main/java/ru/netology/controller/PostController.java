@@ -1,9 +1,7 @@
 package ru.netology.controller;
 
 import com.google.gson.Gson;
-import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
-import ru.netology.repository.PostRepository;
 import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServletResponse;
