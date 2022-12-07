@@ -36,7 +36,7 @@ public class PostRepositoryStubImpl implements PostRepository {
         //Будем считать что удаленные номера можно использовать повторно
         if (post.getId() == 0) {
             post.setId(idCounter.incrementAndGet());
-            repository.get(post.getId()).setPost(post);
+            repository.put(post.getId(),new MetaPost(post));
         } else if (repository.containsKey(post.getId())) {
             repository.get(post.getId()).setPost(post);
             //Если пост с id!=0 не найден в репозитории будем возвращать 404
