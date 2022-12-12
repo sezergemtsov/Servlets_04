@@ -3,13 +3,12 @@ package ru.netology.controller;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.netology.model.Post;
+import ru.netology.model.PostInterface;
 import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Reader;
 
 @Controller
 @RequestMapping("/api/posts")
@@ -40,7 +39,7 @@ public class PostController {
   public void save(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
     final var gson = new Gson();
-    final var post = gson.fromJson(request.getReader(), Post.class);
+    final var post = gson.fromJson(request.getReader(), PostInterface.class);
     final var data = service.save(post);
     response.getWriter().print(gson.toJson(data));
   }
