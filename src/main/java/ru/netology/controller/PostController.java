@@ -3,8 +3,7 @@ package ru.netology.controller;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.netology.model.PostDTO;
-import ru.netology.model.PostInterface;
+import ru.netology.dto.PostDTO;
 import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServletRequest;

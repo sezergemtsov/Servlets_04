@@ -2,7 +2,7 @@ package ru.netology.model;
 
 import ru.netology.exception.GoneException;
 
-public class Post implements PostInterface {
+public class Post {
   private long id;
   private String content;
 

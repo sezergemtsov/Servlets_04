@@ -1,6 +1,8 @@
-package ru.netology.model;
+package ru.netology.dto;
 
-public class PostDTO implements PostInterface{
+import ru.netology.model.Post;
+
+public class PostDTO{
 
     private long id;
     private String content;
@@ -10,17 +12,15 @@ public class PostDTO implements PostInterface{
         this.content = content;
     }
 
-    public PostDTO(PostInterface post) {
+    public PostDTO(Post post) {
         this.id = post.getId();
         this.content = post.getContent();
     }
 
-    @Override
     public long getId() {
         return id;
     }
 
-    @Override
     public String getContent() {
         return content;
     }

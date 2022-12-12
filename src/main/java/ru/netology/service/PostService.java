@@ -4,9 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.netology.exception.GoneException;
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
-import ru.netology.model.PostDTO;
-import ru.netology.model.PostInterface;
-import ru.netology.repository.PostRepositoryStubImpl;
+import ru.netology.dto.PostDTO;
+import ru.netology.repository.PostRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,9 +13,9 @@ import java.util.Vector;
 
 @Service
 public class PostService {
-  private final PostRepositoryStubImpl repository;
+  private final PostRepository repository;
 
-  public PostService(PostRepositoryStubImpl repository) {
+  public PostService(PostRepository repository) {
     this.repository = repository;
   }
 
@@ -38,14 +37,14 @@ public class PostService {
     }
   }
 
-  public PostDTO save(PostInterface post) {
+  public PostDTO save(PostDTO post) {
     if (post.getId() == 0) {
-      return new PostDTO(repository.save(post));
+      return new PostDTO(repository.save(new Post(post.getId(), post.getContent())));
     } else {
       Optional<Post> temp = repository.getById(post.getId());
       if (temp.isPresent()) {
         if (!temp.get().isDeleted()) {
-          return new PostDTO(repository.save(post));
+          return new PostDTO(repository.save(new Post(post.getId(), post.getContent())));
         } else {
           throw new GoneException();
         }
