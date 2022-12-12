@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import ru.netology.model.Post;
 import ru.netology.service.PostService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Reader;
 
-@RestController
+@Controller
 @RequestMapping("/api/posts")
 public class PostController {
   public static final String APPLICATION_JSON = "application/json";
@@ -35,16 +36,16 @@ public class PostController {
     response.getWriter().print(gson.toJson(service.getById(id).getContent()));
   }
 
-  @GetMapping
-  public void save(Reader body, HttpServletResponse response) throws IOException {
+  @PostMapping
+  public void save(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
     final var gson = new Gson();
-    final var post = gson.fromJson(body, Post.class);
+    final var post = gson.fromJson(request.getReader(), Post.class);
     final var data = service.save(post);
     response.getWriter().print(gson.toJson(data));
   }
 
-  @GetMapping("/{id}")
+  @DeleteMapping("/{id}")
   public void removeById(@PathVariable long id, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
     final var gson = new Gson();

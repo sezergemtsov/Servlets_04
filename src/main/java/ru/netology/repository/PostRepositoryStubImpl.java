@@ -2,7 +2,6 @@ package ru.netology.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.netology.exception.NotFoundException;
-import ru.netology.model.MetaPost;
 import ru.netology.model.Post;
 
 import java.util.*;
@@ -12,20 +11,19 @@ import java.util.concurrent.atomic.AtomicLong;
 // Stub
 @Repository
 public class PostRepositoryStubImpl implements PostRepository {
-    private ConcurrentHashMap<Long, MetaPost> repository = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap<>();
     private static AtomicLong idCounter = new AtomicLong(0);
 
     public List<Post> all() {
         List<Post> posts = new Vector<>();
         repository.entrySet().stream()
-                .filter(x->x.getValue().isNotDeleted())
-                .forEach(x->posts.add(x.getValue().getPost()));
+                .forEach(x->posts.add(x.getValue()));
         return posts;
     }
 
     public Optional<Post> getById(long id) throws NotFoundException {
         if (repository.containsKey(id)) {
-            return Optional.ofNullable(repository.get(id).getPost());
+            return Optional.ofNullable(repository.get(id));
         } else {
             throw new NotFoundException("Repository doesn't contain current post");
         }
@@ -36,9 +34,9 @@ public class PostRepositoryStubImpl implements PostRepository {
         //Будем считать что удаленные номера можно использовать повторно
         if (post.getId() == 0) {
             post.setId(idCounter.incrementAndGet());
-            repository.put(post.getId(),new MetaPost(post));
+            repository.put(post.getId(),post);
         } else if (repository.containsKey(post.getId())) {
-            repository.get(post.getId()).setPost(post);
+            repository.replace(post.getId(),post);
             //Если пост с id!=0 не найден в репозитории будем возвращать 404
         } else {
             throw new NotFoundException();
@@ -48,7 +46,7 @@ public class PostRepositoryStubImpl implements PostRepository {
 
     public void removeById(long id) throws NotFoundException {
         if (repository.containsKey(id)) {
-            repository.get(id).markToDelete();
+            //TODO removing mark
         } else {
             throw new NotFoundException("Nothing to delete. Repository doesn't contain current post");
         }
