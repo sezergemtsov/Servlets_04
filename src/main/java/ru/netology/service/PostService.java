@@ -22,15 +22,14 @@ public class PostService {
 
   public List<PostDTO> all() {
     List<PostDTO> list = new Vector<>();
-    repository.all().stream().filter(Post::isDeleted).forEach(x->list.add(new PostDTO(x)));
+    repository.all().stream().filter(x-> !x.isDeleted()).forEach(x->list.add(new PostDTO(x)));
     return list;
   }
 
   public PostDTO getById(long id) throws NotFoundException, GoneException {
-    Optional<Post> post = repository.getById(id);
-    if (post.isPresent()) {
-      if (!post.get().isDeleted()) {
-        return new PostDTO(post.get());
+    if (repository.getById(id).isPresent()) {
+      if (!repository.getById(id).get().isDeleted()) {
+        return new PostDTO(repository.getById(id).get());
       } else {
         throw new GoneException();
       }
@@ -40,19 +39,23 @@ public class PostService {
   }
 
   public PostDTO save(PostInterface post) {
-    Optional<Post> repoPost = repository.getById(post.getId());
-    if (repoPost.isPresent()) {
-      if (!repoPost.get().isDeleted()) {
-        return new PostDTO(repository.save(post));
-      } else {
-        throw new GoneException();
-      }
+    if (post.getId() == 0) {
+      return new PostDTO(repository.save(post));
     } else {
-      throw new NotFoundException();
+      Optional<Post> temp = repository.getById(post.getId());
+      if (temp.isPresent()) {
+        if (!temp.get().isDeleted()) {
+          return new PostDTO(repository.save(post));
+        } else {
+          throw new GoneException();
+        }
+      } else {
+        throw new NotFoundException();
+      }
     }
   }
 
-  public void removeById(long id) throws NotFoundException {
+  public void removeById(long id) throws NotFoundException, GoneException {
     repository.removeById(id);
   }
 }

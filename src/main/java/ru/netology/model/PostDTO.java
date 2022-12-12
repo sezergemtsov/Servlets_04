@@ -2,8 +2,13 @@ package ru.netology.model;
 
 public class PostDTO implements PostInterface{
 
-    private final long id;
-    private final String content;
+    private long id;
+    private String content;
+
+    public PostDTO (long id, String content) {
+        this.id = id;
+        this.content = content;
+    }
 
     public PostDTO(PostInterface post) {
         this.id = post.getId();
@@ -18,5 +23,13 @@ public class PostDTO implements PostInterface{
     @Override
     public String getContent() {
         return content;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

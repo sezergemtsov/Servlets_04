@@ -25,6 +25,10 @@ public class Post implements PostInterface {
     this.id = id;
   }
 
+  public void setContent (String content) {
+    this.content = content;
+  }
+
   public String getContent() {
     return content;
   }

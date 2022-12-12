@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class PostRepositoryStubImpl implements PostRepository {
     private final ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap<>();
-    private static final AtomicLong idCounter = new AtomicLong(0);
+    private static AtomicLong idCounter = new AtomicLong(0);
 
     @Override
     public List<Post> all() {
@@ -33,19 +33,24 @@ public class PostRepositoryStubImpl implements PostRepository {
     }
 
     @Override
-    public Post save(PostInterface post) throws NotFoundException {
-        //Если пришел пост с id = 0, регестрируем новый номер id поста в зависимости от существующих в репозитории
-        Post rPost = new Post(post.getId(), post.getContent());
-        if (rPost.getId() == 0) {
-            rPost.setId(idCounter.incrementAndGet());
-            repository.put(post.getId(), rPost);
-        } else if (repository.containsKey(post.getId())) {
-            repository.replace(post.getId(), rPost);
-            //Если пост с id!=0 не найден в репозитории будем возвращать 404
+    public Post save(PostInterface post) throws NotFoundException, GoneException {
+        if (post.getId() == 0) {
+            Post temp = new Post(post.getId(), post.getContent());
+            temp.setId(idCounter.incrementAndGet());
+            repository.put(temp.getId(), temp);
+            return temp;
         } else {
-            throw new NotFoundException();
+            if (repository.containsKey(post.getId())) {
+                if (!repository.get(post.getId()).isDeleted()) {
+                    repository.get(post.getId()).setContent(post.getContent());
+                    return repository.get(post.getId());
+                } else {
+                    throw new GoneException();
+                }
+            } else {
+                throw new NotFoundException();
+            }
         }
-        return rPost;
     }
 
     @Override
