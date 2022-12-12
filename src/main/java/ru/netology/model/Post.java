@@ -1,8 +1,12 @@
 package ru.netology.model;
 
-public class Post {
+import ru.netology.exception.GoneException;
+
+public class Post implements PostInterface {
   private long id;
   private String content;
+
+  private boolean isDeleted;
 
   public Post() {
   }
@@ -10,6 +14,7 @@ public class Post {
   public Post(long id, String content) {
     this.id = id;
     this.content = content;
+    isDeleted = false;
   }
 
   public long getId() {
@@ -20,11 +25,22 @@ public class Post {
     this.id = id;
   }
 
+  public void setContent (String content) {
+    this.content = content;
+  }
+
   public String getContent() {
     return content;
   }
 
-  public void setContent(String content) {
-    this.content = content;
+  public void markToDelete() {
+    if (!isDeleted) {
+      isDeleted = true;
+    } else {
+      throw new GoneException();
+    }
+  }
+  public boolean isDeleted() {
+    return isDeleted;
   }
 }
