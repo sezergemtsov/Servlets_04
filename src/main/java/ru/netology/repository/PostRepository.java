@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Repository
 public class PostRepository {
     private final ConcurrentHashMap<Long, Post> repository = new ConcurrentHashMap<>();
-    private static AtomicLong idCounter = new AtomicLong(0);
+    private static final AtomicLong idCounter = new AtomicLong(0);
 
     public List<Post> all() {
         List<Post> posts = new Vector<>();
@@ -36,7 +36,7 @@ public class PostRepository {
             return post;
         } else {
             if (repository.containsKey(post.getId())) {
-                if (!repository.get(post.getId()).isDeleted()) {
+                if (repository.get(post.getId()).isItDeleted()) {
                     repository.get(post.getId()).setContent(post.getContent());
                     return repository.get(post.getId());
                 } else {
@@ -48,7 +48,7 @@ public class PostRepository {
         }
     }
 
-    public void removeById(long id) {
+    public void removeById(long id) throws NotFoundException, GoneException {
         if (repository.containsKey(id)) {
             repository.get(id).markToDelete();
         } else {

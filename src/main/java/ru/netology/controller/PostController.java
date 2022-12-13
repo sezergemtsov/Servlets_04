@@ -1,19 +1,14 @@
 package ru.netology.controller;
 
-import com.google.gson.Gson;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.netology.dto.PostDTO;
+import ru.netology.dto.PostDto;
 import ru.netology.service.PostService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
-  public static final String APPLICATION_JSON = "application/json";
   private final PostService service;
 
   public PostController(PostService service) {
@@ -21,36 +16,22 @@ public class PostController {
   }
 
   @GetMapping
-  public void all(HttpServletResponse response) throws IOException {
-    response.setContentType(APPLICATION_JSON);
-    final var data = service.all();
-    final var gson = new Gson();
-    response.getWriter().print(gson.toJson(data));
+  public List<PostDto> all() {
+    return service.all();
   }
 
-  @GetMapping(path = "/{id}",produces = APPLICATION_JSON)
-  public Long getById(@PathVariable Long id) throws IOException {
-/*    response.setContentType(APPLICATION_JSON);
-    final var gson = new Gson();
-    response.getWriter().print(gson.toJson(service.getById(id)));*/
-    return id;
+  @GetMapping("/{id}")
+  public PostDto getById(@PathVariable long id) {
+    return service.getById(id);
   }
 
   @PostMapping
-  public void save(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType(APPLICATION_JSON);
-    final var gson = new Gson();
-    final var post = gson.fromJson(request.getReader(), PostDTO.class);
-    final var data = service.save(post);
-    response.getWriter().print(gson.toJson(data));
+  public PostDto save(@RequestBody PostDto post) {
+    return service.save(post);
   }
 
   @DeleteMapping("/{id}")
-  public void removeById(@PathVariable long id, HttpServletResponse response) throws IOException {
-    response.setContentType(APPLICATION_JSON);
-    final var gson = new Gson();
-    String body = "post " + id + " deleted";
-    service.removeById(id);
-    response.getWriter().print(gson.toJson(body));
+  public String removeById(@PathVariable long id) {
+    return service.removeById(id);
   }
 }

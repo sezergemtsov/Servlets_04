@@ -40,7 +40,7 @@ public class Post {
       throw new GoneException();
     }
   }
-  public boolean isDeleted() {
-    return isDeleted;
+  public boolean isItDeleted() {
+    return !isDeleted;
   }
 }

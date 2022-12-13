@@ -11,6 +11,7 @@ public class GoneException extends RuntimeException {
 
     public GoneException(String message) {
         super(message);
+        System.out.println(this.getMessage());
     }
 
     public GoneException(String message, Throwable cause) {

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.netology.exception.GoneException;
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
-import ru.netology.dto.PostDTO;
+import ru.netology.dto.PostDto;
 import ru.netology.repository.PostRepository;
 
 import java.util.List;
@@ -19,16 +19,16 @@ public class PostService {
     this.repository = repository;
   }
 
-  public List<PostDTO> all() {
-    List<PostDTO> list = new Vector<>();
-    repository.all().stream().filter(x-> !x.isDeleted()).forEach(x->list.add(new PostDTO(x)));
+  public List<PostDto> all() {
+    List<PostDto> list = new Vector<>();
+    repository.all().stream().filter(Post::isItDeleted).forEach(x->list.add(new PostDto(x)));
     return list;
   }
 
-  public PostDTO getById(long id) {
+  public PostDto getById(long id) {
     if (repository.getById(id).isPresent()) {
-      if (!repository.getById(id).get().isDeleted()) {
-        return new PostDTO(repository.getById(id).get());
+      if (repository.getById(id).get().isItDeleted()) {
+        return new PostDto(repository.getById(id).get());
       } else {
         throw new GoneException();
       }
@@ -37,14 +37,14 @@ public class PostService {
     }
   }
 
-  public PostDTO save(PostDTO post) {
+  public PostDto save(PostDto post) {
     if (post.getId() == 0) {
-      return new PostDTO(repository.save(new Post(post.getId(), post.getContent())));
+      return new PostDto(repository.save(new Post(post.getId(), post.getContent())));
     } else {
       Optional<Post> temp = repository.getById(post.getId());
       if (temp.isPresent()) {
-        if (!temp.get().isDeleted()) {
-          return new PostDTO(repository.save(new Post(post.getId(), post.getContent())));
+        if (temp.get().isItDeleted()) {
+          return new PostDto(repository.save(new Post(post.getId(), post.getContent())));
         } else {
           throw new GoneException();
         }
@@ -54,8 +54,15 @@ public class PostService {
     }
   }
 
-  public void removeById(long id) {
-    repository.removeById(id);
+  public String removeById(long id) {
+    try {
+      repository.removeById(id);
+      return "Post " + id + " was deleted";
+    } catch (NotFoundException e) {
+      return "Post " + id + " wasn't found";
+    } catch (GoneException e) {
+      return "Post " + id + " was already deleted";
+    }
   }
 }
 
