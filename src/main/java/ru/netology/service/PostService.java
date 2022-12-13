@@ -25,7 +25,7 @@ public class PostService {
     return list;
   }
 
-  public PostDTO getById(long id) throws NotFoundException, GoneException {
+  public PostDTO getById(long id) {
     if (repository.getById(id).isPresent()) {
       if (!repository.getById(id).get().isDeleted()) {
         return new PostDTO(repository.getById(id).get());
@@ -54,7 +54,7 @@ public class PostService {
     }
   }
 
-  public void removeById(long id) throws NotFoundException, GoneException {
+  public void removeById(long id) {
     repository.removeById(id);
   }
 }

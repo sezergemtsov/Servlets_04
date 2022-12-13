@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Controller
+@RestController
 @RequestMapping("/api/posts")
 public class PostController {
   public static final String APPLICATION_JSON = "application/json";
@@ -28,11 +28,12 @@ public class PostController {
     response.getWriter().print(gson.toJson(data));
   }
 
-  @GetMapping("/{id}")
-  public void getById(@PathVariable long id, HttpServletResponse response) throws IOException {
-    response.setContentType(APPLICATION_JSON);
+  @GetMapping(path = "/{id}",produces = APPLICATION_JSON)
+  public Long getById(@PathVariable Long id) throws IOException {
+/*    response.setContentType(APPLICATION_JSON);
     final var gson = new Gson();
-    response.getWriter().print(gson.toJson(service.getById(id).getContent()));
+    response.getWriter().print(gson.toJson(service.getById(id)));*/
+    return id;
   }
 
   @PostMapping

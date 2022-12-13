@@ -21,7 +21,7 @@ public class PostRepository {
         return posts;
     }
 
-    public Optional<Post> getById(long id) throws NotFoundException {
+    public Optional<Post> getById(long id) {
         if (repository.containsKey(id)) {
             return Optional.ofNullable(repository.get(id));
         } else {
@@ -29,7 +29,7 @@ public class PostRepository {
         }
     }
 
-    public Post save(Post post) throws NotFoundException, GoneException {
+    public Post save(Post post) {
         if (post.getId() == 0) {
             post.setId(idCounter.incrementAndGet());
             repository.put(post.getId(), post);
@@ -48,7 +48,7 @@ public class PostRepository {
         }
     }
 
-    public void removeById(long id) throws NotFoundException, GoneException {
+    public void removeById(long id) {
         if (repository.containsKey(id)) {
             repository.get(id).markToDelete();
         } else {

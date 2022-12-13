@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.GONE)
 public class GoneException extends RuntimeException {
+
     public GoneException() {
     }
 
@@ -23,4 +24,5 @@ public class GoneException extends RuntimeException {
     public GoneException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
+
 }
